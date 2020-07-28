@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-3">
+        <a href="{% url 'client_new' %}"><button class="btn btn-success">New Client</button></a>
+        <div class="row">
+            <div class="col-md-3 col-sm-12">
+                <h3>Filter</h3>
+                <br>
+                <label>Name</label>
+                <input class="form-control" type="text" id="username" placeholder="Name" onkeyup="handleChange()">
+                <label>Email</label>
+                <input class="form-control" type="text" id="email" placeholder="Email" onkeyup="handleChange()">
+                <label>Phone number</label>
+                <input class="form-control" type="text" id="phone_number" placeholder="Phone number"
+                       onkeyup="handleChange()">
+                <label>Suburb</label>
+                <input class="form-control" type="text" id="suburb" placeholder="Suburb" onkeyup="handleChange()">
+            </div>
+            <div class="col-md-9 col-sm-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <th>Name</th>
+                        <th>Contact name</th>
+                        <th>Email</th>
+                        <th>Phone number</th>
+                        <th>Street</th>
+                        <th>Suburb</th>
+                        <th>Post code</th>
+                        <th>State</th>
+                        <th>#</th>
+                    </thead>
+                    <tbody id="client-list">
+                    {% for client in object_list %}
+                        <tr>
+                            <td>{{ client.username }}</td>
+                            <td>{{ client.contact_name }}</td>
+                            <td>{{ client.email }}</td>
+                            <td>{{ client.phone_number }}</td>
+                            <td>{{ client.street_name }}</td>
+                            <td>{{ client.suburb }}</td>
+                            <td>{{ client.postcode }}</td>
+                            <td>{{ client.state }}</td>
+                            <td><a href="{% url 'client_edit' client.id %}">edit</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        function handleChange() {
+            let data = {
+                username: $('#username').val(),
+                email: $('#email').val(),
+                phone_number: $('#phone_number').val(),
+                suburb: $('#suburb').val(),
+            };
+
+            let filterParameters = {};
+
+            for (let item in data) {
+                if (data[item]) {
+                    filterParameters[item] = data[item];
+                }
+            }
+
+            $.ajax({
+                headers: {"X-CSRFToken": '{{csrf_token}}'},
+                url: '{% url "client_filter" %}',
+                data: filterParameters,
+                type: 'GET',
+                success: function (data) {
+                    let client_body = $('#client-list');
+                    client_body.html('');
+                    let clients = JSON.parse(data);
+                    clients.forEach((item) => {
+                        let url = "{% url 'client_edit' 123 %}".replace(/123/, item.pk);
+                        client_body.append(`<tr>
+                            <td>${item.fields.username}</td>
+                            <td>${item.fields.contact_name}</td>
+                            <td>${item.fields.email}</td>
+                            <td>${item.fields.phone_number}</td>
+                            <td>${item.fields.street_name}</td>
+                            <td>${item.fields.suburb}</td>
+                            <td>${item.fields.postcode}</td>
+                            <td>${item.fields.state}</td>
+                            <td><a href="${url}">edit</a></td>
+                        </tr>`)
+                    })
+                }
+            })
+        }
+    </script>
+{% endblock %}
