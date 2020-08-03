@@ -77,17 +77,27 @@
                     let clients = JSON.parse(data);
                     clients.forEach((item) => {
                         let url = "{% url 'client_edit' 123 %}".replace(/123/, item.pk);
-                        client_body.append(`<tr>
-                            <td>${item.fields.username}</td>
-                            <td>${item.fields.contact_name}</td>
-                            <td>${item.fields.email}</td>
-                            <td>${item.fields.phone_number}</td>
-                            <td>${item.fields.street_name}</td>
-                            <td>${item.fields.suburb}</td>
-                            <td>${item.fields.postcode}</td>
-                            <td>${item.fields.state}</td>
-                            <td><a href="${url}">edit</a></td>
-                        </tr>`)
+                        let username = $('<td></td>').text(item.fields.username);
+                        let contact_name = $('<td></td>').text(item.fields.contact_name);
+                        let email = $('<td></td>').text(item.fields.email);
+                        let phone_number = $('<td></td>').text(item.fields.phone_number);
+                        let street_name = $('<td></td>').text(item.fields.street_name);
+                        let suburb = $('<td></td>').text(item.fields.suburb);
+                        let postcode = $('<td></td>').text(item.fields.postcode);
+                        let state = $('<td></td>').text(item.fields.state);
+                        let edit = $('<td></td>');
+                        let urlDom = $('<a></a>').attr('href', url).text('Edit');
+                        edit.append(urlDom);
+                        let row = $('<tr></tr>').append(username);
+                        row.append(contact_name);
+                        row.append(email);
+                        row.append(phone_number);
+                        row.append(street_name);
+                        row.append(suburb);
+                        row.append(postcode);
+                        row.append(state);
+                        row.append(edit);
+                        client_body.append(row);
                     })
                 }
             })

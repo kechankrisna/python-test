@@ -16,15 +16,14 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.views.generic import TemplateView
-from django.urls import path
 
 from python_test.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name="home.html")),
-    path('client/', ClientList.as_view(), name='client_list'),
-    path('client/new/', ClientCreate.as_view(), name='client_new'),
-    path('client/edit/<int:pk>/', ClientUpdate.as_view(), name='client_edit'),
-    path('clients/filter/', clientFilter, name='client_filter')
+    url(r'^client/$', ClientList.as_view(), name='client_list'),
+    url(r'^client/new/$', ClientCreate.as_view(), name='client_new'),
+    url(r'^client/edit/(?P<pk>\d+)/$', ClientUpdate.as_view(), name='client_edit'),
+    url(r'^clients/filter/$', clientFilter, name='client_filter')
 ]
